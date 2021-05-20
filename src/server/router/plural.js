@@ -137,9 +137,20 @@ module.exports = (db, name, opts) => {
               if (isRange) {
                 const isLowerThan = /_gte$/.test(key)
 
+                // check is date
+                const isDateValue =  new Date(Date.parse(value));
+                const dateElementValue =  new Date(elementValue);
+
+                if (isDateValue.toISOString() === value) {
+                  return isLowerThan
+                    ? isDateValue.getTime() <= dateElementValue.getTime()
+                    : isDateValue.getTime() >= dateElementValue.getTime();
+                }
+
                 return isLowerThan
-                  ? value <= elementValue
-                  : value >= elementValue
+                    ? value <= elementValue
+                    : value >= elementValue;
+
               } else if (isDifferent) {
                 return value !== elementValue.toString()
               } else if (isLike) {
